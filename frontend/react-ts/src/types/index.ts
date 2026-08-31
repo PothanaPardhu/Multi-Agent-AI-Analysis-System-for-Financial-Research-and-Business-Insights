@@ -68,6 +68,28 @@ export interface RedFlagAlert {
 }
 
 // ==========================================
+// 4.1 Comparison & Ranking Agent Models (A4)
+// ==========================================
+export interface CompanyRankingItem {
+  company_name: string;
+  rank: number;
+  composite_score: number;
+  investment_grade: 'STRONG BUY' | 'BUY' | 'HOLD' | 'UNDERWEIGHT' | 'AVOID';
+  growth_score: number;
+  margin_score: number;
+  solvency_score: number;
+  risk_penalty: number;
+  key_rationale: string;
+}
+
+export interface ComparisonBenchmarkResult {
+  rankings: CompanyRankingItem[];
+  executive_summary: string;
+  leader_takeaway: string;
+  high_risk_warning: string;
+}
+
+// ==========================================
 // 5. Research Agent & Conversational Q&A
 // ==========================================
 export interface Citation {

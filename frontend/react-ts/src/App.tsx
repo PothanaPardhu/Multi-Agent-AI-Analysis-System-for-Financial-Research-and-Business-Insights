@@ -8,6 +8,7 @@ import { api } from './services/api';
 import { PlusCircle, X } from 'lucide-react';
 import { ExtractionView } from './components/ExtractionView';
 import { RedFlagView } from './components/RedFlagView';
+import { ComparisonView } from './components/ComparisonView';
 
 export const App: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -122,15 +123,20 @@ export const App: React.FC = () => {
           <RedFlagView currentSession={currentSession} />
         )}
 
-        {/* Placeholders for upcoming agent views (Milestones 4-6) */}
+        {activeTab === 'comparison' && (
+          <ComparisonView currentSession={currentSession} />
+        )}
+
+        {/* Placeholders for upcoming agent views (Milestones 5-6) */}
         {activeTab !== 'dashboard' &&
           activeTab !== 'documents' &&
           activeTab !== 'extraction' &&
-          activeTab !== 'red_flags' && (
+          activeTab !== 'red_flags' &&
+          activeTab !== 'comparison' && (
             <div className="max-w-7xl mx-auto px-6 py-12">
               <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center shadow-card">
                 <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4 font-bold text-sm">
-                  A{activeTab === 'comparison' ? '4' : activeTab === 'research' ? '5' : '6'}
+                  A{activeTab === 'research' ? '5' : '6'}
                 </div>
                 <h3 className="text-lg font-bold text-slate-800 capitalize">
                   {activeTab.replace('_', ' ')} Module

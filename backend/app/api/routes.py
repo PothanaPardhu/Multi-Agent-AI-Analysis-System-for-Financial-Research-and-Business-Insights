@@ -8,6 +8,7 @@ from app.services.session_service import session_service
 from app.agents.document_agent import document_agent
 from app.agents.extraction_agent import extraction_agent
 from app.agents.red_flag_agent import red_flag_agent
+from app.agents.comparison_agent import comparison_agent
 router = APIRouter()
 
 # ==========================================
@@ -103,3 +104,11 @@ async def get_session_red_flags(session_id: str):
     """
     flags = red_flag_agent.audit_session_red_flags(session_id)
     return flags
+
+@router.get("/sessions/{session_id}/comparison/benchmark")
+async def get_session_comparison(session_id: str):
+    """
+    Triggers Agent A4 to synthesize cross-company metrics, calculate composite rankings, and generate investment grades.
+    """
+    benchmark = comparison_agent.generate_comparison(session_id)
+    return benchmark

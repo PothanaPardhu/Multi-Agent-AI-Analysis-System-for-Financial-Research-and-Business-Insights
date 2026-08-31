@@ -1,7 +1,5 @@
 import axios from 'axios';
-import type { Session, SessionCreateInput, DocumentMeta , CompanyExtractionRow , RedFlagAlert } from '../types';
-
-
+import type { Session, SessionCreateInput, DocumentMeta , CompanyExtractionRow , RedFlagAlert , ComparisonBenchmarkResult } from '../types';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api/v1';
 
@@ -42,11 +40,19 @@ export const api = {
     );
     return response.data;
   },
-  
+
   // Red Flag Agent (A3) Endpoint
   getRedFlags: async (sessionId: string): Promise<RedFlagAlert[]> => {
     const response = await apiClient.get<RedFlagAlert[]>(
       `/sessions/${sessionId}/red-flags`
+    );
+    return response.data;
+  },
+  
+  // Comparison & Ranking Agent (A4) Endpoint
+  getComparisonBenchmark: async (sessionId: string): Promise<ComparisonBenchmarkResult> => {
+    const response = await apiClient.get<ComparisonBenchmarkResult>(
+      `/sessions/${sessionId}/comparison/benchmark`
     );
     return response.data;
   },
