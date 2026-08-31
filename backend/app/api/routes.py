@@ -6,7 +6,7 @@ from app.core.config import settings
 from app.models.schemas import DocumentMetadata, SessionCreate, SessionResponse
 from app.services.session_service import session_service
 from app.agents.document_agent import document_agent
-
+from app.agents.extraction_agent import extraction_agent
 router = APIRouter()
 
 # ==========================================
@@ -87,3 +87,10 @@ async def upload_document(
         return doc_meta
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Document indexing failed: {str(e)}")
+@router.get("/sessions/{session_id}/extraction/matrix")
+async def get_extraction_matrix(session_id: str):
+    """
+    Triggers Agent A2 to extract standardized financial metrics across workspace filings.
+    """
+    matrix = extraction_agent.extract_metrics_for_session(session_id)
+    return matrix

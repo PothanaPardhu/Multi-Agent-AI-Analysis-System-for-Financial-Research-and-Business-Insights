@@ -6,6 +6,7 @@ import { DocumentManager } from './components/DocumentManager';
 import type { Session, DocumentMeta, TabType, SessionCreateInput } from './types';
 import { api } from './services/api';
 import { PlusCircle, X } from 'lucide-react';
+import { ExtractionView } from './components/ExtractionView';
 
 export const App: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -98,6 +99,7 @@ export const App: React.FC = () => {
       <NavigationTabs activeTab={activeTab} onTabChange={(tab) => setActiveTab(tab)} />
 
       {/* 3. Main Views */}
+{/* 3. Main Views */}
       <main>
         {activeTab === 'dashboard' && (
           <DashboardView documents={documents} onNavigate={(tab) => setActiveTab(tab)} />
@@ -111,21 +113,27 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Placeholders for upcoming agent views (Milestones 2-4) */}
-        {activeTab !== 'dashboard' && activeTab !== 'documents' && (
-          <div className="max-w-7xl mx-auto px-6 py-12">
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center shadow-card">
-              <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4 font-bold text-sm">
-                A{activeTab === 'extraction' ? '2' : activeTab === 'red_flags' ? '3' : activeTab === 'comparison' ? '4' : activeTab === 'research' ? '5' : '6'}
+        {activeTab === 'extraction' && (
+          <ExtractionView currentSession={currentSession} />
+        )}
+
+        {/* Placeholders for upcoming agent views (Milestones 3-4) */}
+        {activeTab !== 'dashboard' &&
+          activeTab !== 'documents' &&
+          activeTab !== 'extraction' && (
+            <div className="max-w-7xl mx-auto px-6 py-12">
+              <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center shadow-card">
+                <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4 font-bold text-sm">
+                  A{activeTab === 'red_flags' ? '3' : activeTab === 'comparison' ? '4' : activeTab === 'research' ? '5' : '6'}
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 capitalize">
+                  {activeTab.replace('_', ' ')} Module
+                </h3>
+                <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
+                  This agent interface will be activated in the next milestone step.
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-slate-800 capitalize">
-                {activeTab.replace('_', ' ')} Module
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
-                This agent interface will be activated in the next milestone step.
-              </p>
             </div>
-          </div>
         )}
       </main>
 
@@ -155,7 +163,7 @@ export const App: React.FC = () => {
                   type="text"
                   placeholder="e.g. FY24 Semiconductor Benchmark"
                   value={newSessionTitle}
-                  onChange={(e) => setNewSessionTitle(e.target.value)}
+                  onChange={(e) => setNewSessionTitle(e.target.value)}    
                   required
                   className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-indigo-500"
                 />
