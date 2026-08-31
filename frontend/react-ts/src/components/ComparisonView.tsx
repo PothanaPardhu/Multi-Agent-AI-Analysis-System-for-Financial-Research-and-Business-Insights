@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trophy, Award, TrendingUp, AlertTriangle, RefreshCw, BarChart3, ShieldCheck } from 'lucide-react';
 import type { ComparisonBenchmarkResult, Session } from '../types';
 import { api } from '../services/api';
+// 
 
 interface ComparisonViewProps {
   currentSession: Session | null;
