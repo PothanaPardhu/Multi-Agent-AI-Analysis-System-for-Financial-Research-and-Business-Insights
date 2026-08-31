@@ -7,6 +7,7 @@ from app.models.schemas import DocumentMetadata, SessionCreate, SessionResponse
 from app.services.session_service import session_service
 from app.agents.document_agent import document_agent
 from app.agents.extraction_agent import extraction_agent
+from app.agents.red_flag_agent import red_flag_agent
 router = APIRouter()
 
 # ==========================================
@@ -94,3 +95,11 @@ async def get_extraction_matrix(session_id: str):
     """
     matrix = extraction_agent.extract_metrics_for_session(session_id)
     return matrix
+
+@router.get("/sessions/{session_id}/red-flags")
+async def get_session_red_flags(session_id: str):
+    """
+    Triggers Agent A3 to perform risk analysis and detect audit red flags.
+    """
+    flags = red_flag_agent.audit_session_red_flags(session_id)
+    return flags

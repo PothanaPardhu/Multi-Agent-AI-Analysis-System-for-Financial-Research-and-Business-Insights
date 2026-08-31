@@ -1,5 +1,6 @@
 import axios from 'axios';
-import type { Session, SessionCreateInput, DocumentMeta , CompanyExtractionRow } from '../types';
+import type { Session, SessionCreateInput, DocumentMeta , CompanyExtractionRow , RedFlagAlert } from '../types';
+
 
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api/v1';
@@ -38,6 +39,14 @@ export const api = {
   getExtractionMatrix: async (sessionId: string): Promise<CompanyExtractionRow[]> => {
     const response = await apiClient.get<CompanyExtractionRow[]>(
       `/sessions/${sessionId}/extraction/matrix`
+    );
+    return response.data;
+  },
+  
+  // Red Flag Agent (A3) Endpoint
+  getRedFlags: async (sessionId: string): Promise<RedFlagAlert[]> => {
+    const response = await apiClient.get<RedFlagAlert[]>(
+      `/sessions/${sessionId}/red-flags`
     );
     return response.data;
   },

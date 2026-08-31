@@ -7,6 +7,7 @@ import type { Session, DocumentMeta, TabType, SessionCreateInput } from './types
 import { api } from './services/api';
 import { PlusCircle, X } from 'lucide-react';
 import { ExtractionView } from './components/ExtractionView';
+import { RedFlagView } from './components/RedFlagView';
 
 export const App: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -117,14 +118,19 @@ export const App: React.FC = () => {
           <ExtractionView currentSession={currentSession} />
         )}
 
-        {/* Placeholders for upcoming agent views (Milestones 3-4) */}
+        {activeTab === 'red_flags' && (
+          <RedFlagView currentSession={currentSession} />
+        )}
+
+        {/* Placeholders for upcoming agent views (Milestones 4-6) */}
         {activeTab !== 'dashboard' &&
           activeTab !== 'documents' &&
-          activeTab !== 'extraction' && (
+          activeTab !== 'extraction' &&
+          activeTab !== 'red_flags' && (
             <div className="max-w-7xl mx-auto px-6 py-12">
               <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center shadow-card">
                 <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4 font-bold text-sm">
-                  A{activeTab === 'red_flags' ? '3' : activeTab === 'comparison' ? '4' : activeTab === 'research' ? '5' : '6'}
+                  A{activeTab === 'comparison' ? '4' : activeTab === 'research' ? '5' : '6'}
                 </div>
                 <h3 className="text-lg font-bold text-slate-800 capitalize">
                   {activeTab.replace('_', ' ')} Module
@@ -136,7 +142,6 @@ export const App: React.FC = () => {
             </div>
         )}
       </main>
-
       {/* New Workspace Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
