@@ -15,7 +15,7 @@ export interface SessionCreateInput {
 }
 
 // ==========================================
-// 2. Document Models
+// 2. Document Models (A1)
 // ==========================================
 export interface DocumentMeta {
   document_id: string;
@@ -30,7 +30,7 @@ export interface DocumentMeta {
 }
 
 // ==========================================
-// 3. Extraction Agent Models
+// 3. Extraction Agent Models (A2)
 // ==========================================
 export interface FinancialMetricItem {
   metric_name: string;
@@ -54,7 +54,7 @@ export interface CompanyExtractionRow {
 }
 
 // ==========================================
-// 4. Red Flag Agent Models
+// 4. Red Flag Agent Models (A3)
 // ==========================================
 export interface RedFlagAlert {
   id?: string;
@@ -68,7 +68,7 @@ export interface RedFlagAlert {
 }
 
 // ==========================================
-// 4.1 Comparison & Ranking Agent Models (A4)
+// 5. Comparison & Ranking Agent Models (A4)
 // ==========================================
 export interface CompanyRankingItem {
   company_name: string;
@@ -90,28 +90,65 @@ export interface ComparisonBenchmarkResult {
 }
 
 // ==========================================
-// 5. Research Agent & Conversational Q&A
+// 6. Research Agent & Conversational Q&A (A5)
 // ==========================================
-export interface Citation {
-  document_id: string;
+export interface CitationItem {
+  citation_id: string;
   company_name: string;
-  file_name: string;
   page_number: number;
   snippet: string;
 }
 
 export interface ChatMessage {
   id: string;
-  sender: 'user' | 'agent';
-  agent_name?: string;
-  content: string;
-  reasoning_steps?: string[];
-  citations?: Citation[];
+  sender: 'user' | 'assistant';
+  text: string;
   timestamp: string;
+  citations?: CitationItem[];
+}
+
+export interface ChatResponse {
+  query: string;
+  answer: string;
+  citations: CitationItem[];
 }
 
 // ==========================================
-// 6. Navigation Tabs
+// 7. Report Agent Models (A6) & Traces
+// ==========================================
+export interface ReportDossier {
+  meta: {
+    report_title: string;
+    session_id: string;
+    total_companies_covered: number;
+    generated_at: string;
+    framework_version: string;
+  };
+  executive_summary: string;
+  leader_takeaway: string;
+  high_risk_warning: string;
+  financial_matrix: CompanyExtractionRow[];
+  rankings: CompanyRankingItem[];
+  red_flags: RedFlagAlert[];
+  documents_audited: {
+    company_name: string;
+    filing_type: string;
+    pages: number;
+    fiscal_year: string;
+  }[];
+}
+
+export interface AgentTraceStep {
+  agent_id: string;
+  name: string;
+  description: string;
+  status: 'completed' | 'active' | 'standby';
+  output_type: string;
+  latency: string;
+}
+
+// ==========================================
+// 8. Navigation Tabs
 // ==========================================
 export type TabType = 
   | 'dashboard' 

@@ -2,6 +2,8 @@ import shutil
 from pathlib import Path
 from typing import List, Optional
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from pydantic import BaseModel
+
 from app.core.config import settings
 from app.models.schemas import DocumentMetadata, SessionCreate, SessionResponse
 from app.services.session_service import session_service
@@ -9,7 +11,17 @@ from app.agents.document_agent import document_agent
 from app.agents.extraction_agent import extraction_agent
 from app.agents.red_flag_agent import red_flag_agent
 from app.agents.comparison_agent import comparison_agent
+from app.agents.research_agent import research_agent
+from app.agents.report_agent import report_agent
+
 router = APIRouter()
+
+# ==========================================
+# Request Schemas
+# ==========================================
+class ChatQueryRequest(BaseModel):
+    query: str
+
 
 # ==========================================
 # 1. Research Workspace & Session Endpoints
@@ -45,7 +57,7 @@ async def get_session_documents(session_id: str):
 
 
 # ==========================================
-# 2. Document Upload & Ingestion Endpoint
+# 2. Document Upload & Ingestion Endpoint (A1)
 # ==========================================
 @router.post("/sessions/{session_id}/documents/upload", response_model=DocumentMetadata)
 async def upload_document(
@@ -67,8 +79,10 @@ async def upload_document(
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF filings are supported")
 
-    # Save uploaded file locally
+    # Ensure upload directory exists
+    settings.UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     saved_path = settings.UPLOAD_DIR / f"{session_id}_{file.filename}"
+    
     try:
         with open(saved_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
@@ -77,7 +91,6 @@ async def upload_document(
     finally:
         file.file.close()
 
-    # Trigger Document Agent ingestion pipeline
     try:
         doc_meta = document_agent.process_and_index_document(
             file_path=saved_path,
@@ -89,7 +102,13 @@ async def upload_document(
         return doc_meta
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Document indexing failed: {str(e)}")
+
+
+# ==========================================
+# 3. Extraction Agent Endpoints (A2)
+# ==========================================
 @router.get("/sessions/{session_id}/extraction/matrix")
+@router.get("/sessions/{session_id}/extraction/metrics")
 async def get_extraction_matrix(session_id: str):
     """
     Triggers Agent A2 to extract standardized financial metrics across workspace filings.
@@ -97,6 +116,10 @@ async def get_extraction_matrix(session_id: str):
     matrix = extraction_agent.extract_metrics_for_session(session_id)
     return matrix
 
+
+# ==========================================
+# 4. Red Flag Agent Endpoint (A3)
+# ==========================================
 @router.get("/sessions/{session_id}/red-flags")
 async def get_session_red_flags(session_id: str):
     """
@@ -105,6 +128,10 @@ async def get_session_red_flags(session_id: str):
     flags = red_flag_agent.audit_session_red_flags(session_id)
     return flags
 
+
+# ==========================================
+# 5. Comparison & Ranking Agent Endpoint (A4)
+# ==========================================
 @router.get("/sessions/{session_id}/comparison/benchmark")
 async def get_session_comparison(session_id: str):
     """
@@ -112,3 +139,35 @@ async def get_session_comparison(session_id: str):
     """
     benchmark = comparison_agent.generate_comparison(session_id)
     return benchmark
+
+
+# ==========================================
+# 6. Research Agent Endpoints (A5)
+# ==========================================
+@router.post("/sessions/{session_id}/research/chat")
+async def chat_research_agent(session_id: str, payload: ChatQueryRequest):
+    """
+    Triggers Agent A5 to perform multi-turn financial Q&A grounded in retrieved vector chunks.
+    """
+    return research_agent.chat(session_id=session_id, query=payload.query)
+
+
+@router.delete("/sessions/{session_id}/research/history")
+async def reset_research_history(session_id: str):
+    """
+    Resets conversational memory for the given session.
+    """
+    research_agent.clear_history(session_id)
+    return {"status": "cleared"}
+
+
+# ==========================================
+# 7. Report Generation Agent Endpoint (A6)
+# ==========================================
+@router.get("/sessions/{session_id}/report/dossier")
+async def get_session_report_dossier(session_id: str):
+    """
+    Triggers Agent A6 to aggregate and compile a complete research dossier.
+    """
+    dossier = report_agent.compile_full_dossier(session_id)
+    return dossier

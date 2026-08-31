@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     
     # Gemini API Settings
     GEMINI_API_KEY: str = ""
-    DEFAULT_MODEL: str = "gemini-1.5-pro"
+    DEFAULT_MODEL: str = "gemini-2.5-flash"
     EMBEDDING_MODEL: str = "gemini-embedding-2"
 
     class Config:

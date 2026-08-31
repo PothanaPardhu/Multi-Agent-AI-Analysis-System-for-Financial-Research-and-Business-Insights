@@ -53,6 +53,17 @@
         "uploaded_at": "2026-08-31 15:04:06.210926",
         "total_pages": 2,
         "status": "indexed"
+      },
+      {
+        "document_id": "0393e950-02bd-4740-94de-03d5d1ae5220",
+        "session_id": "d7280620-7dc1-4ddc-9f6d-d93b55819798",
+        "file_name": "d7280620-7dc1-4ddc-9f6d-d93b55819798_NVIDIA_FY2024_10K_Excerpt.pdf",
+        "company_name": "NVIDIA",
+        "filing_type": "10-K",
+        "fiscal_year": "FY2024",
+        "uploaded_at": "2026-08-31 19:16:05.221177",
+        "total_pages": 2,
+        "status": "indexed"
       }
     ]
   }
